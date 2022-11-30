@@ -6,7 +6,8 @@ fn main() {
     // between the different algorithms. Since insertion sort is O(N^2)
     // and the other two are O(N log N), you should definitely be able
     // to see a difference between it and the two faster algorithms.
-    let size = 20; // 100000;
+    let size = 100000; 
+    println!("Sorting {} entries", &size);
     let v = generate_random_array(size, 0, size);
 
     let mut u = v.clone();
@@ -174,27 +175,27 @@ fn merge<T: PartialOrd + std::marker::Copy + std::fmt::Debug>(xs: Vec<T>, ys: Ve
     // vector, and then push all the remaining elements from the
     // other vector onto the result.
     let mut v = Vec::with_capacity(xs.len() + ys.len());
-    let mut xPos = 0;
-    let mut yPos = 0;
-    while (xPos < xs.len()) && (yPos < ys.len()) {
-        if xs[xPos] <= ys[yPos] {
-            v.push(xs[xPos]);
-            xPos += 1;
+    let mut x_pos = 0;
+    let mut y_pos = 0;
+    while (x_pos < xs.len()) && (y_pos < ys.len()) {
+        if xs[x_pos] <= ys[y_pos] {
+            v.push(xs[x_pos]);
+            x_pos += 1;
         } else {
-            v.push(ys[yPos]);
-            yPos += 1;
+            v.push(ys[y_pos]);
+            y_pos += 1;
         }
     }
-    if xPos >= xs.len() {
-        while yPos < ys.len() {
-            v.push(ys[yPos]);
-            yPos += 1;
+    if x_pos >= xs.len() {
+        while y_pos < ys.len() {
+            v.push(ys[y_pos]);
+            y_pos += 1;
         }
     }
-    if yPos >= ys.len() {
-        while xPos < xs.len() {
-            v.push(xs[xPos]);
-            xPos += 1;
+    if y_pos >= ys.len() {
+        while x_pos < xs.len() {
+            v.push(xs[x_pos]);
+            x_pos += 1;
         }
     }
     v

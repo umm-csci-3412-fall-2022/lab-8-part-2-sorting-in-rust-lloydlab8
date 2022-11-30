@@ -6,15 +6,15 @@ fn main() {
     // between the different algorithms. Since insertion sort is O(N^2)
     // and the other two are O(N log N), you should definitely be able
     // to see a difference between it and the two faster algorithms.
-    let size = 1000; // 100000;
+    let size = 20; // 100000;
     let v = generate_random_array(size, 0, size);
 
     let mut u = v.clone();
+    let mut w = v.clone();
     let before_insertion = Instant::now();
     insertion_sort(&mut u);
     println!("Elapsed time for insertion sort was {:?}.", before_insertion.elapsed());
 
-    let mut w = v.clone();
     // println!("{:?}", &w);
     let before_quicksort = Instant::now();
     quicksort(&mut w);
@@ -72,16 +72,6 @@ fn insertion_sort<T: PartialOrd + std::fmt::Debug>(v: &mut [T]) {
     // is O(N^2).
 }
 
-// Quicksort sort is also "in place", so we modify the input array v
-// directly and do _not_ return anything. The elements of the
-// array need to traits `PartialOrd` (so they support < and ≤).
-// Also requiring the trait `Debug` means you can print the array
-// and slices of the array for debugging purposes with `{:?}`. I
-// don't do that here, but you could add some print statements if,
-// for example, you want to watch the sorting happen.
-//
-// Note that the parameter v *has* to be mutable because we're 
-// modifying it in place.
 fn quicksort<T: PartialOrd + std::fmt::Debug>(v: &mut [T]) {
     // Quicksort is a recursive solution where we select a pivot
     // value (usually just the first element) and split (in place)
@@ -104,18 +94,20 @@ fn quicksort<T: PartialOrd + std::fmt::Debug>(v: &mut [T]) {
         return;
     }
 
-    // Now choose a pivot and do the organizing.
-    
-    // ...
-
-    let smaller = 0; // Totally wrong – you should fix this.
-
+    let mut pivot = 0;
+    for i in 0..length {
+        if v[i] <= v[length-1] {
+            v.swap(pivot, i);
+            pivot+=1;
+        }
+    }
+    pivot-=1;
     // Sort all the items < pivot
-    quicksort(&mut v[0..smaller]);
+    quicksort(&mut v[0..pivot]);
     // Sort all the items ≥ pivot, *not* including the
     // pivot value itself. If we don't include the +1
     // here you can end up in infinite recursions.
-    quicksort(&mut v[smaller+1..length]);
+    quicksort(&mut v[pivot+1..length]);
 }
 
 // Merge sort can't be done "in place", so it needs to return a _new_
@@ -181,10 +173,31 @@ fn merge<T: PartialOrd + std::marker::Copy + std::fmt::Debug>(xs: Vec<T>, ys: Ve
     // You stop when one of your indices hits the end of its
     // vector, and then push all the remaining elements from the
     // other vector onto the result.
-
-    // This is totally wrong and will not sort. You should replace it
-    // with something useful. :)
-    xs
+    let mut v = Vec::with_capacity(xs.len() + ys.len());
+    let mut xPos = 0;
+    let mut yPos = 0;
+    while (xPos < xs.len()) && (yPos < ys.len()) {
+        if xs[xPos] <= ys[yPos] {
+            v.push(xs[xPos]);
+            xPos += 1;
+        } else {
+            v.push(ys[yPos]);
+            yPos += 1;
+        }
+    }
+    if xPos >= xs.len() {
+        while yPos < ys.len() {
+            v.push(ys[yPos]);
+            yPos += 1;
+        }
+    }
+    if yPos >= ys.len() {
+        while xPos < xs.len() {
+            v.push(xs[xPos]);
+            xPos += 1;
+        }
+    }
+    v
 }
 
 fn is_sorted<T: PartialOrd>(slice: &[T]) -> bool {
